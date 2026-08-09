@@ -34,3 +34,20 @@ def display_movie_information(response):
         data_to_display.append([f"ID: {result.get("id")}", f"Title: {result.get("title")}", f"Description: {result.get("overview")}", f"Release Date: {result.get("release_date")}"])
     for info in data_to_display:
         print(info)
+
+def select_movie_title(response):
+    i = 1
+    for result in response['results']:
+        print("ID:" + str(i) + " " + result.get("title"))
+        i += 1
+
+    choice = input("Please enter the ID of the movie you want to add. ")
+    data_to_add = [
+        response['results'][int(choice) - 1].get("id"),
+        response['results'][int(choice) - 1].get("title"),
+        response['results'][int(choice) - 1].get("overview"),
+        response['results'][int(choice) - 1].get("release_date"),
+        response['results'][int(choice) - 1].get("vote_average"),
+    ]
+    print(data_to_add)
+    return data_to_add
