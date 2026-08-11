@@ -1,11 +1,16 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-tmdb_url = 'https://api.themoviedb.org/3/search/movie'
+load_dotenv()
 
-tmdb_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkNzNiMDFhZDAwYWRkOGIyOTA1NzU0YjE3NmZlMTE0YyIsIm5iZiI6MTc4NjEyNDE3Ni4xODMsInN1YiI6IjZhNzYxNzkwMDI2NzU2M2EzYmUxMTBiZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Vm4_hC9Pb3JJeV1395DdwsQd9qRwltpH3Yh9Ri5ylhs"
+tmdb_movie_url = "https://api.themoviedb.org/3/search/movie"
+tmdb_show_url = "https://api.themoviedb.org/3/search/tv"
+
+tmdb_access_token = os.getenv("TMDB_ACCESS_TOKEN")
 
 headers = {
-    "Authorization": f"Bearer {tmdb_token}",
+    "Authorization": f"Bearer {tmdb_access_token}",
     "accept": "application/json"
 }
 
@@ -14,9 +19,21 @@ def get_movie_information(movie_to_find):
         "query": movie_to_find
     }
 
-    response = requests.get(tmdb_url, headers=headers, params=params)
+    response = requests.get(
+        tmdb_movie_url, 
+        headers=headers, 
+        params=params
+    )
 
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"Failed. Status code: {response.status_code}")
+    response.raise_for_status()
+    return response.json()
+        
+def get_tv_information(show_to_find):
+    params = {
+        "query": show_to_find
+    }
+    
+    response = requests.get(tmdb_show_url, headers=headers, params=params)
+    
+    response.raise_for_status()
+    return response.json()
