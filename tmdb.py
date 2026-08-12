@@ -14,26 +14,39 @@ headers = {
     "accept": "application/json"
 }
 
-def get_movie_information(movie_to_find):
+def get_information(media_to_find, type):
     params = {
-        "query": movie_to_find
+        "query": media_to_find
     }
 
+    url = tmdb_movie_url if type == "movie" else tmdb_show_url
+
     response = requests.get(
-        tmdb_movie_url, 
+        url=url, 
         headers=headers, 
         params=params
     )
 
     response.raise_for_status()
-    return response.json()
-        
-def get_tv_information(show_to_find):
-    params = {
-        "query": show_to_find
-    }
-    
-    response = requests.get(tmdb_show_url, headers=headers, params=params)
-    
-    response.raise_for_status()
-    return response.json()
+    return normalize_response(response.json(), type)
+
+def normalize_response(response, type):
+    normalized_data = []
+    for result in response["results"]:
+        title = result.get("title") if type == "movie" else result.get("name")
+        release_date = (
+            result.get("release_date")
+            if type == "movie"
+            else result.get("first_air_date")
+        )
+        data_dict = {
+            "id": result.get("id"),
+            "title": title or "No Title Available",
+            "description": result.get("overview") or "No Descripton Available",
+            "release_date": release_date or "No Release Date Available",
+            "rating": result.get("vote_average") or "No Rating Available",
+            "type": type
+        }
+        normalized_data.append(data_dict)
+
+    return normalized_data

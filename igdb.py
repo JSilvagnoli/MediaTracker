@@ -1,6 +1,7 @@
 from requests import post
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -27,8 +28,9 @@ def get_igdb_access_token():
     igdb_access_token = token_response.json()["access_token"]
     return igdb_access_token
 
-# Query IGDB
-def get_game_information(igdb_access_token, game_to_find):
+def get_information(game_to_find):
+    igdb_access_token = get_igdb_access_token()
+
     igdb_url = "https://api.igdb.com/v4/games"
         
     headers = {
@@ -48,4 +50,26 @@ def get_game_information(igdb_access_token, game_to_find):
     )
 
     response.raise_for_status()
-    return response.json()
+
+    return normalize_response(response.json())
+
+def normalize_response(response):
+    normalized_data = []
+    for result in response:
+        data_dict = {
+            "id": result.get("id"),
+            "title": result.get("name") or "No Title Available",
+            "description": result.get("summary") or "No Description Available",
+            "release_date": convert_release_date(result.get("first_release_date")),
+            "rating": result.get("rating") or "No Rating Available",
+            "type": "game"
+        }
+        normalized_data.append(data_dict)
+
+    return normalized_data
+
+def convert_release_date(unix_time_stamp):
+    if unix_time_stamp is None:
+        return "No Release Date Available"
+    else:
+        return datetime.fromtimestamp(unix_time_stamp).strftime("%Y-%m-%d")

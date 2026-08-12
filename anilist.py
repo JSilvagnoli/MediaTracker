@@ -1,31 +1,31 @@
 import requests
+from datetime import date
 
 anilist_url = "https://graphql.anilist.co"
 
-def get_anime_information(anime_to_find):
-    query = """
-        query ($search: String!) {
-        Page {
-            media(search: $search, type: ANIME) {
+def get_information(media_to_find, type):
+    query = f"""
+        query ($search: String!) {{
+        Page {{
+            media(search: $search, type: {type.upper()}) {{
                 id
-                title {
+                title {{
                     english
-                }
+                }}
                 description
-                startDate {
+                startDate {{
                     day
                     month
                     year
-                }
+                }}
                 averageScore
-            }
-        }
-    }
+            }}
+        }}
+    }}
     """
 
-    # Define our query variables and values that will be used in the query request
     variables = {
-        'search': anime_to_find
+        'search': media_to_find
     }
 
     response = requests.post(
@@ -34,40 +34,38 @@ def get_anime_information(anime_to_find):
     )
 
     response.raise_for_status()
-    return response.json()
+    return normalize_response(response.json(), type)
 
-def get_manga_information(manga_to_find):
-    query = """
-        query ($search: String!) {
-        Page {
-            media(search: $search, type: MANGA) {
-                id
-                title {
-                    english
-                }
-                description
-                startDate {
-                    day
-                    month
-                    year
-                }
-                averageScore
-            }
+def normalize_response(response, type):
+    normalized_data = []
+    for result in response["data"]["Page"]["media"]:
+        title = result.get("title")["english"]
+        release_date_dict = result.get("startDate")
+        if (
+            release_date_dict is not None and 
+            release_date_dict['year'] is not None and 
+            release_date_dict['month'] is not None and
+            release_date_dict['day'] is not None
+        ):
+            release_date = date(
+                release_date_dict['year'],
+                release_date_dict['month'],
+                release_date_dict['day']
+            )
+            release_date = release_date.strftime("%Y-%m-%d")
+        else:
+            release_date = ""
+
+        data_dict = {
+            "id": result.get("id"),
+            "title": title or "No Title Available",
+            "description": result.get("description") or "No Descripton Available",
+            "release_date": release_date or "No Release Date Available",
+            "rating": result.get("averageScore") or "No Rating Available",
+            "type": type
         }
-    }
-    """
+        normalized_data.append(data_dict)
 
-    # Define our query variables and values that will be used in the query request
-    variables = {
-        'search': manga_to_find
-    }
+    return normalized_data
 
-    response = requests.post(
-        anilist_url, 
-        json={'query': query, 'variables': variables}
-    )
-
-    response.raise_for_status()
-    return response.json()
-
-                                            
+        

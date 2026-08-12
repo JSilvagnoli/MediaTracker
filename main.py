@@ -1,124 +1,58 @@
-import sqlite3
-
 import ui
-import tmdb
 import database
+import tmdb
 import igdb
 import anilist
 
 def main():
-    database.create_movie_database()
-    database.create_show_database()
-    database.create_game_database()
-    database.create_anime_database()
-    database.create_manga_database()
-
     while True:
-        handle_menu_choice(ui.display_menu())
+        type = ui.display_menu()
+        database.create_database(type)
+        handle_get_media(type)
 
-def handle_menu_choice(user_input):
-    handler = MENU_CHOICES.get(user_input)
-    if handler:
-        handler()
-
-def handle_get_movie():
+def handle_get_media(media_type):
     while True:
-        movie_to_find = ui.get_media_title()
-        found_movies = tmdb.get_movie_information(movie_to_find)
-        selected_movies = ui.display_movie_information_found(found_movies)
+        packaged_media = get_media(media_type)
+
+        if not packaged_media:
+            return None
         
-        if selected_movies is not None:
-            handle_add_movie_to_database(selected_movies)
-            database.display_movie_database()
-            
-        if ui.search_for_more_media().lower() != "y":
+        add_to_database(packaged_media, media_type)
+
+        if not ui.confirm("Would you like to add something else?"):
             break
 
-def handle_get_show():
-    while True: 
-        show_to_find = ui.get_media_title()
-        found_shows = tmdb.get_tv_information(show_to_find)
-        selected_shows = ui.display_show_information_found(found_shows)
-
-        if selected_shows is not None:
-            handle_add_show_to_database(selected_shows)
-            database.display_show_database()
-
-        if (ui.search_for_more_media() == "y"):
-            continue
-        else:
-            break
-
-def handle_get_game():
-    access_token = igdb.get_igdb_access_token()
-
-    while True:
-        game_to_find = ui.get_media_title()
-        found_games = igdb.get_game_information(access_token, game_to_find)
-        selected_games = ui.display_game_information_found(found_games)
-
-        if selected_games is not None:
-            handle_add_game_to_database(selected_games)
-            database.display_game_database()
-
-        if (ui.search_for_more_media() == "y"):
-            continue
-        else:
-            break
-
-def handle_get_anime():
-    while True:
-        anime_to_find = ui.get_media_title()
-        found_anime = anilist.get_anime_information(anime_to_find)
-        selected_anime = ui.display_anime_information_found(found_anime)
-
-        if selected_anime is not None:
-            handle_add_anime_to_database(selected_anime)
-            database.display_anime_database()
-
-        if (ui.search_for_more_media() == "y"):
-            continue
-        else:
-            break
-
-def handle_get_manga():
-    while True:
-        manga_to_find = ui.get_media_title()
-        found_manga = anilist.get_manga_information(manga_to_find)
-        selected_manga = ui.display_manga_information_found(found_manga)
-
-        if selected_manga is not None:
-            handle_add_manga_to_database(selected_manga)
-            database.display_manga_database()
-
-        if (ui.search_for_more_media() == "y"):
-            continue
-        else:
-            break
-
-
-def handle_add_movie_to_database(response):
-    database.add_movie_to_database(response)
+def get_media(media_type):
+    media_to_find = ui.get_media_name()
     
-def handle_add_show_to_database(response):
-    database.add_show_to_database(response)
+    if not media_to_find:
+        return None
 
-def handle_add_game_to_database(response):
-    database.add_game_to_database(response)
+    if media_type == "movie" or media_type == "show":
+        found_media = tmdb.get_information(media_to_find, media_type)
+    elif media_type == "game":
+        found_media = igdb.get_information(media_to_find)
+    elif media_type == "anime" or media_type == "manga":
+        found_media = anilist.get_information(media_to_find, media_type)
+    else:
+        return None
 
-def handle_add_anime_to_database(response):
-    database.add_anime_to_database(response)
+    ui.display_information_found(found_media)
 
-def handle_add_manga_to_database(response):
-    database.add_manga_to_database(response)
+    selected_media = ui.select_media(found_media)
 
-MENU_CHOICES = {
-    '1': handle_get_movie,
-    '2': handle_get_show,
-    '3': handle_get_game,
-    '4': handle_get_anime,
-    '5': handle_get_manga
-}
+    if selected_media is None:
+        return None
+
+    if not ui.confirm("Would you like to save this media?"):
+        return None
+
+    return selected_media
+
+def add_to_database(media, media_type):
+    if media is not None:
+        database.add_to_database(media)
+        database.display_database(media_type)
 
 if __name__ == "__main__":
     main()
