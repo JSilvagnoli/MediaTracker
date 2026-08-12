@@ -28,7 +28,7 @@ def get_igdb_access_token():
     igdb_access_token = token_response.json()["access_token"]
     return igdb_access_token
 
-def get_information(game_to_find):
+def get_information(game_to_find: str):
     igdb_access_token = get_igdb_access_token()
 
     igdb_url = "https://api.igdb.com/v4/games"

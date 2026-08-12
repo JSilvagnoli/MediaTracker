@@ -3,7 +3,7 @@ from datetime import date
 
 anilist_url = "https://graphql.anilist.co"
 
-def get_information(media_to_find, type):
+def get_information(media_to_find: str, type: str):
     query = f"""
         query ($search: String!) {{
         Page {{

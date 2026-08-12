@@ -19,10 +19,9 @@ def create_database(type):
     con.commit()
 
 def add_to_database(response):
-    if type != "":
-        cur.execute(f"""
-            INSERT INTO {response.get("type")} (id, title, description, release_date, rating, type) VALUES (:id, :title, :description, :release_date, :rating, :type)""", response
-        )
+    cur.execute(f"""
+        INSERT INTO {response.get("type")} (id, title, description, release_date, rating, type) VALUES (:id, :title, :description, :release_date, :rating, :type)""", response
+    )
 
     con.commit()
 

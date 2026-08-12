@@ -1,10 +1,14 @@
+from fastapi import FastAPI
+
 import ui
 import database
 import tmdb
 import igdb
 import anilist
 
-def main():
+app = FastAPI()
+
+def main():    
     while True:
         type = ui.display_menu()
         database.create_database(type)
@@ -53,6 +57,19 @@ def add_to_database(media, media_type):
     if media is not None:
         database.add_to_database(media)
         database.display_database(media_type)
+
+@app.get("/")
+def get_information(media_to_find: str):
+    return {"search": media_to_find}
+
+@app.get("/search")
+def search_media(media_to_find: str, media_type: str):
+    if media_type == "movie" or media_type == "show":
+        return tmdb.get_information(media_to_find, media_type)
+    elif media_type == "game":
+        return igdb.get_information(media_to_find)
+    elif media_type == "anime" or media_type == "manga":
+        return anilist.get_information(media_to_find, media_type)
 
 if __name__ == "__main__":
     main()
