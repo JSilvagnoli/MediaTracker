@@ -46,6 +46,7 @@ def normalize_response(response, media_type):
             "description": result.get("overview") or "No Descripton Available",
             "release_date": release_date or "No Release Date Available",
             "rating": result.get("vote_average") or "No Rating Available",
+            "image": "https://image.tmdb.org/t/p/w600_and_h900_face" + result.get("poster_path") or "No Image Available",
             "type": media_type
         }
         normalized_data.append(data_dict)

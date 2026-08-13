@@ -10,7 +10,7 @@ def get_information(media_to_find: str, type: str):
             media(search: $search, type: {type.upper()}) {{
                 id
                 title {{
-                    english
+                    romaji
                 }}
                 description
                 startDate {{
@@ -19,6 +19,9 @@ def get_information(media_to_find: str, type: str):
                     year
                 }}
                 averageScore
+                coverImage {{
+                    large
+                }}
             }}
         }}
     }}
@@ -34,12 +37,14 @@ def get_information(media_to_find: str, type: str):
     )
 
     response.raise_for_status()
+    print(response.json())
     return normalize_response(response.json(), type)
 
 def normalize_response(response, type):
     normalized_data = []
     for result in response["data"]["Page"]["media"]:
-        title = result.get("title")["english"]
+        title = result.get("title")["romaji"]
+        image = result.get("coverImage")["large"]
         release_date_dict = result.get("startDate")
         if (
             release_date_dict is not None and 
@@ -62,6 +67,7 @@ def normalize_response(response, type):
             "description": result.get("description") or "No Descripton Available",
             "release_date": release_date or "No Release Date Available",
             "rating": result.get("averageScore") or "No Rating Available",
+            "image": image or "No Image Available",
             "type": type
         }
         normalized_data.append(data_dict)

@@ -40,7 +40,7 @@ def get_information(game_to_find: str):
 
     query = f"""
     search "{game_to_find}";
-    fields id, name, summary, first_release_date, rating;
+    fields id, name, summary, first_release_date, rating, cover.image_id;
     """
 
     response = post(
@@ -62,8 +62,13 @@ def normalize_response(response):
             "description": result.get("summary") or "No Description Available",
             "release_date": convert_release_date(result.get("first_release_date")),
             "rating": result.get("rating") or "No Rating Available",
-            "type": "game"
-        }
+            "image": (
+                f"https://images.igdb.com/igdb/image/upload/t_cover_big/{result['cover']['image_id']}.jpg"
+                if result.get("cover")
+                else "No Image Available"
+        ),
+    "type": "game"
+}
         normalized_data.append(data_dict)
 
     return normalized_data
