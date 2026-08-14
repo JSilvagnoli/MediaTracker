@@ -10,6 +10,15 @@ document.getElementById("type").addEventListener("keydown", function(event) {
     }
 });
 
+let selectedCard = null;
+
+const popup = document.getElementById("confirmation");
+const confirmBtn = document.getElementById("confirm");
+const denyBtn = document.getElementById("deny");
+
+confirmBtn.addEventListener("click", confirmButton);
+denyBtn.addEventListener("click", denyButton);
+
 async function getInput(){
     var input = document.getElementById("input");
     var dropdown = document.getElementById("type");
@@ -31,16 +40,22 @@ async function getInput(){
     data.forEach(media => {
         const card = document.createElement("div");
 
-        card.dataset.id = media.id;
-        card.dataset.title = media.title;
-        card.dataset.image = media.image;
-        card.dataset.releaseDate = media.release_date;
-        card.dataset.description = media.description;
-        card.dataset.rating = media.rating;
-        card.dataset.mediaType = media_type;
+        const data = {
+            id: media.id,
+            title: media.title,
+            image: media.image,
+            releaseDate: media.release_date,
+            description: media.description,
+            rating: media.rating,
+            type: media.type
+        };
+        
+        Object.entries(data).forEach(([key, value]) => {
+            card.dataset[key] = value;
+        });
 
         card.innerHTML = `
-            <h1>${media.title}</h2>
+            <h1>${media.title}</h1>
             <img src=${media.image}>
             <h2>Release Date: ${media.release_date}</h2>
             <p>${media.description}</p>
@@ -48,19 +63,28 @@ async function getInput(){
         `;
 
         card.addEventListener("click", () => {
-            // Instead of printing to the console, ask the user if they want to save this movie to their list, and send it back to python then to sqlite3
-            console.log(
-                card.dataset.id 
-                + " " + card.dataset.title 
-                + " " + card.dataset.description
-                + " " + card.dataset.releaseDate 
-                + " " + card.dataset.rating 
-                + " " + card.dataset.image 
-                + " " + card.dataset.mediaType
-            );
+            selectedCard = card;
+            popup.showModal();
         });
 
         container.appendChild(card);
+    });      
+}
+
+async function confirmButton(){
+    const response = await fetch("http://127.0.0.1:8000/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(selectedCard.dataset)
     });
-        
+
+    popup.close();
+
+    const result = await response.json();
+}
+
+function denyButton(){
+    popup.close();
 }

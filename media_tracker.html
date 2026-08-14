@@ -33,11 +33,17 @@
             </form>
         </div>
 
-        <script src="media_tracker.js"></script>
-
         <div id="results" class="container">
-            
+            <dialog id="confirmation">
+                <h1>Would you like to save your selection?</h1>
+                <div class="button-group">
+                    <button id="confirm">Yes</button>
+                    <button id="deny">No</button>
+                </div>
+            </dialog>
         </div>
+
+        <script src="media_tracker.js" defer></script>
     </body>
 
 </html>
