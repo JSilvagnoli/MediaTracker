@@ -90,5 +90,9 @@ def format_frontend_data(data: dict):
 
     return data
 
+@app.patch("/updateFavoriteStatus")
+def update_favorite_status(data: dict):
+    database.update_favorite_status(data);
+
 if __name__ == "__main__":
     main()

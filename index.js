@@ -32,7 +32,6 @@ async function getInput(){
         + "&media_type="
         + encodeURIComponent(media_type)
     );
-
     
     const data = await response.json();
 

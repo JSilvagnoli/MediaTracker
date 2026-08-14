@@ -1,7 +1,6 @@
 async function getData(){
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type");
-    console.log(type);
     const response = await fetch(
         "http://127.0.0.1:8000/media?media_type="
         + encodeURIComponent(type)
@@ -36,8 +35,9 @@ export async function displayData(){
             card.dataset[key] = value;
         });
 
+        const favoriteIcon = media.favorite_status ? "★" : "☆";
         card.innerHTML = `
-            <button class="favoriteBtn">☆</button>
+            <button type="button" class="favoriteBtn">${favoriteIcon}</button>
             <h1>${media.title}</h1>
             <img src="${media.image}">
             <h2>Release Date: ${media.release_date}</h2>
@@ -50,10 +50,28 @@ export async function displayData(){
         favoriteButton.addEventListener("click", () => {
             if (favoriteButton.textContent === "☆") {
                 favoriteButton.textContent = "★";
+                media.favorite_status = true;
             }
-            else favoriteButton.textContent = "☆";
+            else {
+                favoriteButton.textContent = "☆";
+                media.favorite_status = false;
+            }
+
+            updateFavoriteStatus(media);
         });
 
         container.appendChild(card);
     });     
+}
+
+async function updateFavoriteStatus(media){
+    console.log(media);
+    const response = await fetch(
+        "http://127.0.0.1:8000/updateFavoriteStatus", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(media)
+    });
 }
