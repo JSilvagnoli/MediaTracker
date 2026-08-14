@@ -19,6 +19,12 @@
     overflow-wrap: break-word;
 }
 
+.container p {
+    font-size: 10px;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
 .container img {
     width: 100%;
     max-width: 200px;

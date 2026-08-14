@@ -26,34 +26,41 @@ async function getInput(){
 
     const data = await response.json();
 
-    const resultsElement = document.getElementById("results");
+    const container = document.getElementById("results");
 
-    for (const media of data){
-        console.log(media);
-
+    data.forEach(media => {
         const card = document.createElement("div");
 
-        const title = document.createElement("h1");
-        const image = document.createElement("img");
-        const release_date = document.createElement("h2");
-        const description = document.createElement("h2");
-        const rating = document.createElement("h2");
-        const id = document.createElement("h2");
+        card.dataset.id = media.id;
+        card.dataset.title = media.title;
+        card.dataset.image = media.image;
+        card.dataset.releaseDate = media.release_date;
+        card.dataset.description = media.description;
+        card.dataset.rating = media.rating;
+        card.dataset.mediaType = media_type;
 
-        title.textContent = media.title;
-        image.src = media.image;
-        release_date.textContent = "Release Date: " + media.release_date;
-        description.textContent = media.description;
-        rating.textContent = "Rating: " + media.rating;
-        id.textContent = "ID: " + media.id;
+        card.innerHTML = `
+            <h1>${media.title}</h2>
+            <img src=${media.image}>
+            <h2>Release Date: ${media.release_date}</h2>
+            <p>${media.description}</p>
+            <h2>Rating: ${media.rating}</h2>
+        `;
 
-        card.appendChild(title);
-        card.appendChild(image);
-        card.appendChild(release_date);
-        card.appendChild(description);
-        card.appendChild(rating);
-        card.appendChild(id);
+        card.addEventListener("click", () => {
+            // Instead of printing to the console, ask the user if they want to save this movie to their list, and send it back to python then to sqlite3
+            console.log(
+                card.dataset.id 
+                + " " + card.dataset.title 
+                + " " + card.dataset.description
+                + " " + card.dataset.releaseDate 
+                + " " + card.dataset.rating 
+                + " " + card.dataset.image 
+                + " " + card.dataset.mediaType
+            );
+        });
 
-        resultsElement.appendChild(card);
-    }
+        container.appendChild(card);
+    });
+        
 }
