@@ -37,12 +37,22 @@ export async function displayData(){
         });
 
         card.innerHTML = `
+            <button class="favoriteBtn">☆</button>
             <h1>${media.title}</h1>
             <img src="${media.image}">
             <h2>Release Date: ${media.release_date}</h2>
             <p>${media.description}</p>
             <h2>Rating: ${media.rating}</h2>
         `;
+
+        const favoriteButton = card.querySelector(".favoriteBtn");
+
+        favoriteButton.addEventListener("click", () => {
+            if (favoriteButton.textContent === "☆") {
+                favoriteButton.textContent = "★";
+            }
+            else favoriteButton.textContent = "☆";
+        });
 
         container.appendChild(card);
     });     
