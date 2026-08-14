@@ -18,7 +18,6 @@ app.add_middleware(
 def main():    
     while True:
         type = ui.display_menu()
-        database.create_database(type)
         handle_get_media(type)
 
 def handle_get_media(media_type):
@@ -27,7 +26,7 @@ def handle_get_media(media_type):
 
         if not packaged_media:
             return None
-        
+
         add_to_database(packaged_media, media_type)
 
         if not ui.confirm("Would you like to add something else?"):
@@ -76,7 +75,20 @@ def search_media(media_to_find: str, media_type: str):
 
 @app.post("/save")
 def add_to_database(data: dict):
-    print(data)
+    formatted_data = format_frontend_data(data)
+
+    database.create_database(formatted_data["type"])
+    database.add_to_database(formatted_data)
+
+@app.get("/media")
+def get_media(media_type: str):
+    return database.display_database(media_type)
+
+def format_frontend_data(data: dict):
+    data["id"] = int(data["id"])
+    data["rating"] = float(data["rating"])
+
+    return data
 
 if __name__ == "__main__":
     main()
