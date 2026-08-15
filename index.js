@@ -57,9 +57,11 @@ async function getInput(){
             card.dataset[key] = value;
         });
 
+        const cardImg = media.image || "./No_Image_Available.jpg";
+
         card.innerHTML = `
             <h1>${media.title}</h1>
-            <img src="${media.image}">
+            <img src="${cardImg}">
             <h2>Release Date: ${media.release_date}</h2>
             <p>${media.description}</p>
             <h2>Rating: ${media.rating}</h2>

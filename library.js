@@ -36,11 +36,12 @@ export async function displayData(){
         });
 
         const favoriteIcon = media.favorite_status ? "★" : "☆";
+        const cardImg = media.image || "./No_Image_Available.jpg";
 
         card.innerHTML = `
             <button type="button" class="favoriteBtn">${favoriteIcon}</button>
             <h1>${media.title}</h1>
-            <img src="${media.image}">
+            <img src="${cardImg}">
             <h2>Release Date: ${media.release_date}</h2>
             <p>${media.description}</p>
             <h2>Rating: ${media.rating}</h2>
