@@ -47,7 +47,8 @@ async function getInput(){
             releaseDate: media.release_date,
             rating: media.rating,
             image: media.image,
-            type: media.type
+            type: media.type,
+            dateAdded: ""
         };
         
         Object.entries(data).forEach(([key, value]) => {
@@ -72,6 +73,8 @@ async function getInput(){
 }
 
 async function confirmButton(){
+    const currentDateTime = new Date().toLocaleString();
+    selectedCard.dataset.dateAdded = currentDateTime
     const response = await fetch("http://127.0.0.1:8000/save", {
         method: "POST",
         headers: {

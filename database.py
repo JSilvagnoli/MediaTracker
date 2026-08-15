@@ -13,7 +13,9 @@ def create_database(type):
             rating REAL,
             image TEXT,
             type TEXT,
-            favorite_status INTEGER DEFAULT 0
+            date_added TEXT DEFAULT "",
+            favorite_status INTEGER DEFAULT 0, 
+            completion_status TEXT DEFAULT not started
         )
     """)
 
@@ -27,7 +29,7 @@ def add_to_database(response):
     print(response)
     try:
         cur.execute(f"""
-            INSERT INTO {response.get("type")} (id, title, description, release_date, rating, image, type) VALUES (:id, :title, :description, :releaseDate, :rating, :image, :type)""", response
+            INSERT INTO {response.get("type")} (id, title, description, release_date, rating, image, type, date_added) VALUES (:id, :title, :description, :releaseDate, :rating, :image, :type, :dateAdded)""", response
         )
     except sqlite3.Error as e:
         print(f"Database error occured. Possibly Duplicate entry. Duplicate entries are not allowed: {e}")
