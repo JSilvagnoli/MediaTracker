@@ -59,11 +59,6 @@ def get_media(media_type):
 
     return selected_media
 
-def add_to_database(media, media_type):
-    if media is not None:
-        database.add_to_database(media)
-        database.display_database(media_type)
-
 @app.get("/search")
 def search_media(media_to_find: str, media_type: str):
     if media_type == "movie" or media_type == "show":
@@ -80,15 +75,20 @@ def add_to_database(data: dict):
     database.create_database(formatted_data["type"])
     database.add_to_database(formatted_data)
 
-@app.get("/media")
-def get_media(media_type: str):
-    return database.display_database(media_type)
-
 def format_frontend_data(data: dict):
     data["id"] = int(data["id"])
     data["rating"] = float(data["rating"])
 
     return data
+
+def add_to_database(media, media_type):
+    if media is not None:
+        database.add_to_database(media)
+        database.display_database(media_type)
+
+@app.get("/media")
+def get_media(media_type: str):
+    return database.display_database(media_type)
 
 @app.patch("/updateFavoriteStatus")
 def update_favorite_status(data: dict):

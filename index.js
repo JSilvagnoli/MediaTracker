@@ -23,14 +23,14 @@ async function getInput(){
     var input = document.getElementById("input");
     var dropdown = document.getElementById("type");
 
-    const media_to_find = input.value;
-    const media_type = dropdown.value;
+    const mediaToFind = input.value;
+    const mediaType = dropdown.value;
 
     const response = await fetch(
         "http://127.0.0.1:8000/search?media_to_find=" 
-        + encodeURIComponent(media_to_find) 
+        + encodeURIComponent(mediaToFind) 
         + "&media_type="
-        + encodeURIComponent(media_type)
+        + encodeURIComponent(mediaType)
     );
     
     const data = await response.json();
