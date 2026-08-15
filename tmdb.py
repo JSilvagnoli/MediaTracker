@@ -46,7 +46,11 @@ def normalize_response(response, media_type):
             "title": title or "No Title Available",
             "description": result.get("overview") or "No Descripton Available",
             "release_date": release_date or "No Release Date Available",
-            "rating": result.get("vote_average") or "No Rating Available",
+            "rating": (
+                result["vote_average"]
+                if result.get("vote_average")
+                else "0"
+            ),
             "image": (
                 "https://image.tmdb.org/t/p/w600_and_h900_face" + result["poster_path"]
                 if result.get("poster_path")
