@@ -36,8 +36,12 @@ def get_information(media_to_find: str, type: str):
         json={'query': query, 'variables': variables}
     )
 
+    print("Status:", response.status_code)
+    print("Headers:", response.headers)
+    print("Body:", response.text)
+
     response.raise_for_status()
-    print(response.json())
+
     return normalize_response(response.json(), type)
 
 def normalize_response(response, type):
@@ -66,7 +70,11 @@ def normalize_response(response, type):
             "title": title or "No Title Available",
             "description": result.get("description") or "No Descripton Available",
             "release_date": release_date or "No Release Date Available",
-            "rating": result.get("averageScore") or "No Rating Available",
+            "rating": (
+                result["averageScore"]
+                if result.get("averageScore")
+                else "0"
+            ),
             "image": image or "No Image Available",
             "type": type
         }

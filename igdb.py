@@ -61,11 +61,15 @@ def normalize_response(response):
             "title": result.get("name") or "No Title Available",
             "description": result.get("summary") or "No Description Available",
             "release_date": convert_release_date(result.get("first_release_date")),
-            "rating": result.get("rating") or "No Rating Available",
+            "rating": (
+                result["rating"]
+                if result.get("rating")
+                else "0"
+            ),
             "image": (
                 f"https://images.igdb.com/igdb/image/upload/t_cover_big/{result['cover']['image_id']}.jpg"
                 if result.get("cover")
-                else "No Image Available"
+                else ""
         ),
     "type": "game"
 }
