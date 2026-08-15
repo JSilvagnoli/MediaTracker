@@ -25,6 +25,30 @@
     overflow-wrap: break-word;
 }
 
+.container button {
+    font-size: 10px;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+.container label {
+    font-size: 10px;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+.container input {
+    font-size: 10px;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+.container select {
+    font-size: 10px;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
 .container img {
     width: 100%;
     max-width: 200px;

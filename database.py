@@ -16,7 +16,7 @@ def create_database(type):
             date_added TEXT DEFAULT "",
             favorite_status INTEGER DEFAULT 0, 
             completion_status TEXT DEFAULT "not started",
-            personal_rating INTEGER DEFAULT 0
+            personal_rating TEXT DEFAULT 0
         )
     """)
 
@@ -88,6 +88,8 @@ def update_personal_rating(data):
     con = sqlite3.connect("media_tracker.db")
     con.row_factory = sqlite3.Row
     cur = con.cursor()
+
+    print(data)
 
     cur.execute(
         f"UPDATE {data["type"]} SET personal_rating = ? WHERE id = ?",

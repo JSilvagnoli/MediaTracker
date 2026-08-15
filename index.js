@@ -26,8 +26,6 @@ async function getInput(){
     const mediaToFind = input.value;
     const mediaType = dropdown.value;
 
-    console.log(mediaToFind);
-    console.log(mediaType);
     const response = await fetch(
         "http://127.0.0.1:8000/search?media_to_find=" 
         + encodeURIComponent(mediaToFind) 

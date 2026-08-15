@@ -98,5 +98,9 @@ def update_favorite_status(data: dict):
 def update_completion_status(data: dict):
     database.update_completion_status(data);
 
+@app.patch("/updatePersonalRating")
+def update_personal_rating(data:dict):
+    database.update_personal_rating(data)
+
 if __name__ == "__main__":
     main()

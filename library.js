@@ -37,6 +37,7 @@ export async function displayData(){
 
         const favoriteIcon = media.favorite_status ? "★" : "☆";
         const cardImg = media.image || "./No_Image_Available.jpg";
+        const userRating = media.personal_rating || 0;
 
         card.innerHTML = `
             <button type="button" class="favoriteBtn">${favoriteIcon}</button>
@@ -45,6 +46,8 @@ export async function displayData(){
             <h2>Release Date: ${media.release_date}</h2>
             <p>${media.description}</p>
             <h2>Rating: ${media.rating}</h2>
+            <label for="rating">Your Rating (0-10):</label>
+            <input class="personalRating" type="number" id="rating" name="rating" min="0" max="10" value="${userRating}" step="1">
             <label for="completionStatus">Completion Status:</label>
             <select class="completionStatus" name="completionStatus">
                 <option value="not started">Not Started</option>
@@ -73,8 +76,16 @@ export async function displayData(){
 
         completionStatus.addEventListener("change", function(event) {
             media.completion_status = completionStatus.value;
-            console.log(media.completion_status);
+
             updateCompletionStatus(media);
+        });
+
+        const rating = card.querySelector(".personalRating");
+
+        rating.addEventListener("change", function(event) {
+            media.personal_rating = rating.value;
+
+            updatePersonalRating(media);
         });
 
         container.appendChild(card);
@@ -82,7 +93,6 @@ export async function displayData(){
 }
 
 async function updateFavoriteStatus(media){
-    console.log(media);
     const response = await fetch(
         "http://127.0.0.1:8000/updateFavoriteStatus", {
             method: "PATCH",
@@ -94,9 +104,20 @@ async function updateFavoriteStatus(media){
 }
 
 async function updateCompletionStatus(media){
-    console.log(media);
     const response = await fetch(
         "http://127.0.0.1:8000/updateCompletionStatus", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(media)
+    });
+}
+
+async function updatePersonalRating(media){
+    console.log(media);
+    const response = await fetch(
+        "http://127.0.0.1:8000/updatePersonalRating", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
