@@ -94,5 +94,9 @@ def get_media(media_type: str):
 def update_favorite_status(data: dict):
     database.update_favorite_status(data);
 
+@app.patch("/updateCompletionStatus")
+def update_completion_status(data: dict):
+    database.update_completion_status(data);
+
 if __name__ == "__main__":
     main()

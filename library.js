@@ -36,6 +36,7 @@ export async function displayData(){
         });
 
         const favoriteIcon = media.favorite_status ? "★" : "☆";
+
         card.innerHTML = `
             <button type="button" class="favoriteBtn">${favoriteIcon}</button>
             <h1>${media.title}</h1>
@@ -43,6 +44,12 @@ export async function displayData(){
             <h2>Release Date: ${media.release_date}</h2>
             <p>${media.description}</p>
             <h2>Rating: ${media.rating}</h2>
+            <label for="completionStatus">Completion Status:</label>
+            <select class="completionStatus" name="completionStatus">
+                <option value="not started">Not Started</option>
+                <option value="in progress">In Progress</option>
+                <option value="completed">Completed</option>
+            </select>
         `;
 
         const favoriteButton = card.querySelector(".favoriteBtn");
@@ -60,6 +67,15 @@ export async function displayData(){
             updateFavoriteStatus(media);
         });
 
+        const completionStatus = card.querySelector(".completionStatus");
+        completionStatus.value = media.completion_status;
+
+        completionStatus.addEventListener("change", function(event) {
+            media.completion_status = completionStatus.value;
+            console.log(media.completion_status);
+            updateCompletionStatus(media);
+        });
+
         container.appendChild(card);
     });     
 }
@@ -68,6 +84,18 @@ async function updateFavoriteStatus(media){
     console.log(media);
     const response = await fetch(
         "http://127.0.0.1:8000/updateFavoriteStatus", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(media)
+    });
+}
+
+async function updateCompletionStatus(media){
+    console.log(media);
+    const response = await fetch(
+        "http://127.0.0.1:8000/updateCompletionStatus", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"

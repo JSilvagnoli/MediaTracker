@@ -15,7 +15,7 @@ def create_database(type):
             type TEXT,
             date_added TEXT DEFAULT "",
             favorite_status INTEGER DEFAULT 0, 
-            completion_status TEXT DEFAULT not started
+            completion_status TEXT DEFAULT "not started"
         )
     """)
 
@@ -57,6 +57,23 @@ def update_favorite_status(data):
     cur.execute(
         f"UPDATE {data["type"]} SET favorite_status = ? WHERE id = ?",
         (data["favorite_status"], data["id"])
+    )
+
+    cur.execute(f"SELECT * FROM {data["type"]}")
+    results_dict = [dict(row) for row in cur.fetchall()]
+    print(results_dict)
+
+    con.commit()
+    con.close()
+
+def update_completion_status(data):
+    con = sqlite3.connect("media_tracker.db")
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+
+    cur.execute(
+        f"UPDATE {data["type"]} SET completion_status = ? WHERE id = ?",
+        (data["completion_status"], data["id"])
     )
 
     cur.execute(f"SELECT * FROM {data["type"]}")
