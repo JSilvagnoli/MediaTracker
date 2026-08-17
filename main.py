@@ -92,14 +92,18 @@ def get_media(media_type: str):
 
 @app.patch("/updateFavoriteStatus")
 def update_favorite_status(data: dict):
-    database.update_favorite_status(data);
+    database.update_favorite_status(data)
+
+@app.delete("/deleteMedia")
+def delete_media(data: dict):
+    database.delete_media(data)
 
 @app.patch("/updateCompletionStatus")
 def update_completion_status(data: dict):
-    database.update_completion_status(data);
+    database.update_completion_status(data)
 
 @app.patch("/updatePersonalRating")
-def update_personal_rating(data:dict):
+def update_personal_rating(data: dict):
     database.update_personal_rating(data)
 
 if __name__ == "__main__":

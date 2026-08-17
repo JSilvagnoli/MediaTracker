@@ -67,6 +67,19 @@ def update_favorite_status(data):
     con.commit()
     con.close()
 
+def delete_media(data):
+    con = sqlite3.connect("media_tracker.db")
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+
+    cur.execute(
+        f"DELETE FROM {data["type"]} WHERE id = ?",
+        (data["id"],)
+    )
+
+    con.commit()
+    con.close()
+
 def update_completion_status(data):
     con = sqlite3.connect("media_tracker.db")
     con.row_factory = sqlite3.Row

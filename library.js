@@ -41,6 +41,7 @@ export async function displayData(){
 
         card.innerHTML = `
             <button type="button" class="favoriteBtn">${favoriteIcon}</button>
+            <button type="button" class="deleteBtn">X</button>
             <h1>${media.title}</h1>
             <img src="${cardImg}">
             <h2>Release Date: ${media.release_date}</h2>
@@ -71,6 +72,12 @@ export async function displayData(){
             updateFavoriteStatus(media);
         });
 
+        const deleteButton = card.querySelector(".deleteBtn");
+
+        deleteButton.addEventListener("click", () => {
+            deleteMedia(media);
+        });
+
         const completionStatus = card.querySelector(".completionStatus");
         completionStatus.value = media.completion_status;
 
@@ -96,6 +103,17 @@ async function updateFavoriteStatus(media){
     const response = await fetch(
         "http://127.0.0.1:8000/updateFavoriteStatus", {
             method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(media)
+    });
+}
+
+async function deleteMedia(media){
+    const response = await fetch(
+        "http://127.0.0.1:8000/deleteMedia", {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
             },
