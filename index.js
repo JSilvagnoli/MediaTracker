@@ -3,11 +3,8 @@ document.getElementById("searchForm").addEventListener("submit", function(event)
     getInput();
 });
 
-document.getElementById("type").addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        getInput();
-    }
+document.getElementById("type").addEventListener("change", () => {
+    getInput();
 });
 
 let selectedCard = null;

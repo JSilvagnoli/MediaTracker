@@ -3,6 +3,16 @@
     <head>
         <a href="index.html">Search</a>
 
+        <label for="sort">Sort By:</label>
+            <select class="sort" name="sort">
+                <option value="alphabetical">Alphabetical</option>
+                <option value="date added">Date Added</option>
+                <option value="favorite">Favorite</option>
+                <option value="completion status">Completion Status</option>
+                <option value="personal rating">Personal Rating</option>
+                <option value="user rating">User Rating</option>
+            </select>
+
         <link rel="stylesheet" href="style.css">
     </head>
 
@@ -10,9 +20,9 @@
         <div id="results" class="container"></div>
 
         <script type="module">
-            import { displayData } from "./library.js";
+            import { getData, displayData } from "./library.js";
 
-            displayData();
+            const data = await getData();
         </script>
     </body>
 

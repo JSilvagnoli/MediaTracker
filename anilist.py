@@ -36,10 +36,6 @@ def get_information(media_to_find: str, type: str):
         json={'query': query, 'variables': variables}
     )
 
-    print("Status:", response.status_code)
-    print("Headers:", response.headers)
-    print("Body:", response.text)
-
     response.raise_for_status()
 
     return normalize_response(response.json(), type)

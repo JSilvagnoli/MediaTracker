@@ -27,7 +27,6 @@ def add_to_database(response):
     con = sqlite3.connect("media_tracker.db")
     cur = con.cursor()
 
-    print(response)
     try:
         cur.execute(f"""
             INSERT INTO {response.get("type")} (id, title, description, release_date, rating, image, type, date_added) VALUES (:id, :title, :description, :releaseDate, :rating, :image, :type, :dateAdded)""", response
@@ -61,8 +60,6 @@ def update_favorite_status(data):
     )
 
     cur.execute(f"SELECT * FROM {data["type"]}")
-    results_dict = [dict(row) for row in cur.fetchall()]
-    print(results_dict)
 
     con.commit()
     con.close()
@@ -91,8 +88,6 @@ def update_completion_status(data):
     )
 
     cur.execute(f"SELECT * FROM {data["type"]}")
-    results_dict = [dict(row) for row in cur.fetchall()]
-    print(results_dict)
 
     con.commit()
     con.close()
@@ -102,16 +97,12 @@ def update_personal_rating(data):
     con.row_factory = sqlite3.Row
     cur = con.cursor()
 
-    print(data)
-
     cur.execute(
         f"UPDATE {data["type"]} SET personal_rating = ? WHERE id = ?",
         (data["personal_rating"], data["id"])
     )
 
     cur.execute(f"SELECT * FROM {data["type"]}")
-    results_dict = [dict(row) for row in cur.fetchall()]
-    print(results_dict)
 
     con.commit()
     con.close()

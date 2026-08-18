@@ -32,7 +32,6 @@ def get_information(media_to_find, media_type):
     return normalize_response(response.json(), media_type)
 
 def normalize_response(response, media_type):
-    print(response)
     normalized_data = []
     for result in response["results"]:
         title = result.get("title") if media_type == "movie" else result.get("name")

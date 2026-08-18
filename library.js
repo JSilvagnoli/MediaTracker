@@ -1,21 +1,27 @@
-async function getData(){
+export async function getData(){
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type");
+
     const response = await fetch(
         "http://127.0.0.1:8000/media?media_type="
         + encodeURIComponent(type)
     );
 
     if (response.status === 200){
-        return response.json();
+        return await response.json();
     }
 }
 
-const popup = document.getElementById("confirmation");
+document.querySelector(".sort").addEventListener("change", async () => {
+    const data = document.getElementById("results");
+    const sortType = document.querySelector(".sort").value;
 
-export async function displayData(){
-    const data = await getData();
+    const media = await getData();
 
+    sortBy(media, sortType);
+});
+
+export async function displayData(data){
     const container = document.getElementById("results");
 
     data.forEach(media => {
@@ -133,7 +139,6 @@ async function updateCompletionStatus(media){
 }
 
 async function updatePersonalRating(media){
-    console.log(media);
     const response = await fetch(
         "http://127.0.0.1:8000/updatePersonalRating", {
             method: "PATCH",
@@ -142,4 +147,30 @@ async function updatePersonalRating(media){
             },
             body: JSON.stringify(media)
     });
+}
+
+async function sortBy(media, sortType){
+    if (sortType === "alphabetical"){
+        media.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    else if (sortType === "date added"){
+        media.sort((a, b) => a.date_added.localeCompare(b.date_added));
+    }
+    else if (sortType === "favorite"){
+        media.sort((a, b) => b.favorite_status - a.favorite_status);
+    }
+    else if (sortType === "completion status"){
+        media.sort((a, b) => a.completion_status.localeCompare(b.completion_status));
+    }
+    else if (sortType === "personal rating"){
+        media.sort((a, b) => b.personal_rating - a.personal_rating);
+    }
+    else if (sortType === "user rating"){
+        media.sort((a, b) => b.rating - a.rating);
+    }
+
+    const container = document.getElementById("results");
+    container.replaceChildren();
+
+    displayData(media);
 }
