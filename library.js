@@ -149,12 +149,12 @@ async function updatePersonalRating(media){
     });
 }
 
-async function sortBy(media, sortType){
+export async function sortBy(media, sortType){
     if (sortType === "alphabetical"){
         media.sort((a, b) => a.title.localeCompare(b.title));
     }
     else if (sortType === "date added"){
-        media.sort((a, b) => a.date_added.localeCompare(b.date_added));
+        media.sort((a, b) => b.date_added.localeCompare(a.date_added));
     }
     else if (sortType === "favorite"){
         media.sort((a, b) => b.favorite_status - a.favorite_status);

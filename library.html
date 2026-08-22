@@ -20,9 +20,11 @@
         <div id="results" class="container"></div>
 
         <script type="module">
-            import { getData, displayData } from "./library.js";
+            import { getData, sortBy } from "./library.js";
 
             const data = await getData();
+            
+            sortBy(data, "date added");
         </script>
     </body>
 
